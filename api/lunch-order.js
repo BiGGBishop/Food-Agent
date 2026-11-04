@@ -58,8 +58,10 @@ export default async function handler(req, res) {
     console.log(`Submitted order for ${date}`);
     return res.status(200).send(`Submitted order for ${date}`);
   }
-  const text = await r.text();
-  const reason = text.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").slice(0, 300);
+  const text = (await r.text()).replace(/<script[\s\S]*?<\/script>|<style[\s\S]*?<\/style>/g, " ");
+  const plain = text.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ");
+  const errs = plain.match(/[^.]{0,80}(required|valid|error|must|limit|closed|sign in)[^.]{0,80}/gi) || [];
+  const reason = errs.slice(0, 5).join(" | ") || plain.slice(0, 400);
   console.log(`Failed: ${r.status} (fbzx found: ${html.includes('name="fbzx"')}) ${reason}`);
   res.status(500).send(`Failed: ${r.status}`);
 }
