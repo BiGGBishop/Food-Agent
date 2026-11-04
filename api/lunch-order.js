@@ -7,8 +7,10 @@ export default async function handler(req, res) {
     return res.status(401).end();
   }
 
-  // Order date = next Tuesday (runs on Friday, so +4 days)
-  const t = new Date(Date.now() + 4 * 864e5);
+  // Order date = the next Tuesday, in Lagos time (UTC+1)
+  const now = new Date(Date.now() + 36e5);
+  const days = (2 - now.getUTCDay() + 7) % 7 || 7;
+  const t = new Date(now.getTime() + days * 864e5);
 
   const body = new URLSearchParams({
     emailAddress: "david.o@aestheticclinicgroup.com",
