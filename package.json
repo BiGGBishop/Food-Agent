@@ -1,0 +1,6 @@
+{
+  "name": "tuesday-lunch-order",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=18" }
+}
