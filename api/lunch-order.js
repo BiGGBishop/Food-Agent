@@ -3,7 +3,10 @@ const FORM =
 
 export default async function handler(req, res) {
   // Only Vercel's cron (or someone with the secret) may trigger this
-  if (req.headers.authorization !== `Bearer ${process.env.CRON_SECRET}`) {
+  const secret = (process.env.CRON_SECRET || "").trim();
+  const auth = (req.headers.authorization || "").trim();
+  if (!secret || auth !== `Bearer ${secret}`) {
+    console.log("Unauthorized", { secretSet: !!secret, authSent: !!auth });
     return res.status(401).end();
   }
 
